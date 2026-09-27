@@ -88,9 +88,14 @@ CI builds on every push (Windows + macOS installers are attached to the
 workflow run as artifacts). Push a `v*` tag to publish a GitHub Release:
 
 ```sh
-# bump "version" in package.json, src-tauri/Cargo.toml and src-tauri/tauri.conf.json first
-git tag v0.1.0 && git push origin v0.1.0
+bun run bump patch    # or minor, major, or an exact 1.2.3
+git push && git push origin v0.1.1
 ```
+
+`bump` updates `package.json`, `src-tauri/Cargo.toml` and `src-tauri/Cargo.lock`,
+commits, and tags. `tauri.conf.json` reads its version from `package.json`, so
+there's nothing to change there. It refuses to run with uncommitted changes or
+if the tag already exists.
 
 Release dates come from Steam's public store API. Not affiliated with Valve or
 Square Enix.
