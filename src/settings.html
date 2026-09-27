@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Strife Delivery</title>
+  <link rel="stylesheet" href="fluent/fluent.css" />
+  <link rel="stylesheet" href="css/settings.css" />
+</head>
+<body class="f-app">
+  <div class="f-shell">
+    <nav class="f-nav" aria-label="Sections">
+      <div class="f-nav-header">
+        <img src="icon.png" alt="" />
+        <span class="f-nav-title f-body-strong">Strife Delivery</span>
+      </div>
+      <button class="f-nav-item" data-nav="games"><i data-icon="games"></i><span class="f-nav-label">Games</span></button>
+      <button class="f-nav-item" data-nav="widget"><i data-icon="widget"></i><span class="f-nav-label">Widget</span></button>
+      <div class="f-nav-spacer"></div>
+      <button class="f-nav-item" data-nav="about"><i data-icon="info"></i><span class="f-nav-label">About</span><span class="f-badge-dot" id="about-dot" hidden></span></button>
+    </nav>
+
+    <main class="f-content" id="content">
+      <!-- Games ----------------------------------------------------------->
+      <section class="f-page" data-page="games" hidden>
+        <header class="f-page-header">
+          <h1 class="f-title">Games</h1>
+          <button class="f-btn accent" data-go="add"><i data-icon="add"></i>Add a game</button>
+        </header>
+        <div class="f-stack" id="games"></div>
+        <div class="f-card block f-empty" id="games-empty" hidden>
+          <p class="f-subtitle">Nothing to count down to yet</p>
+          <p class="f-secondary">Add the game you're waiting for and it'll show up on your desktop.</p>
+          <p style="margin-top:16px"><button class="f-btn accent" data-go="add"><i data-icon="add"></i>Add a game</button></p>
+        </div>
+      </section>
+
+      <!-- Add ------------------------------------------------------------->
+      <section class="f-page" data-page="add" hidden>
+        <header class="f-page-header">
+          <nav class="f-breadcrumb f-title" aria-label="Breadcrumb">
+            <a href="#" data-go="games">Games</a><i data-icon="chevronRight"></i><span>Add a game</span>
+          </nav>
+        </header>
+
+        <h2 class="f-section-title">Search Steam</h2>
+        <div class="f-stack">
+          <div class="f-card block">
+            <form class="f-row" id="search-form">
+              <label class="f-search">
+                <i data-icon="search"></i>
+                <input class="f-input" id="search" type="search" placeholder="e.g. Final Fantasy VII Revelation" autocomplete="off" aria-label="Game name" />
+              </label>
+              <button class="f-btn accent" type="submit">Search</button>
+            </form>
+            <p class="f-caption f-secondary search-status" id="search-status">Release date and art are filled in automatically, and kept up to date.</p>
+          </div>
+          <div class="f-stack" id="results"></div>
+        </div>
+
+        <h2 class="f-section-title">Not on Steam?</h2>
+        <form class="f-card block manual" id="manual">
+          <label class="f-field">
+            <span>Name</span>
+            <input class="f-input" id="m-name" required maxlength="120" placeholder="Final Fantasy VII Revelation" />
+          </label>
+          <div class="f-row fields">
+            <label class="f-field">
+              <span>Release date</span>
+              <input class="f-input" id="m-date" type="date" required />
+            </label>
+            <label class="f-field">
+              <span>Time <span class="f-secondary">(optional)</span></span>
+              <input class="f-input" id="m-time" type="time" />
+            </label>
+          </div>
+          <div class="f-field">
+            <span>Art <span class="f-secondary">(optional)</span></span>
+            <div class="f-row">
+              <div class="f-thumb" id="m-art-preview"></div>
+              <label class="f-btn f-file"><input id="m-art" type="file" accept="image/*" /><i data-icon="image"></i>Choose image</label>
+              <button class="f-btn subtle" type="button" id="m-art-clear" hidden>Clear</button>
+            </div>
+          </div>
+          <div class="f-row end">
+            <button class="f-btn accent" type="submit">Add game</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- Edit ------------------------------------------------------------>
+      <section class="f-page" data-page="edit" hidden>
+        <header class="f-page-header">
+          <nav class="f-breadcrumb f-title" aria-label="Breadcrumb">
+            <a href="#" data-go="games">Games</a><i data-icon="chevronRight"></i><span id="e-crumb"></span>
+          </nav>
+        </header>
+
+        <div class="hero">
+          <div class="f-thumb lg" id="e-hero-art"></div>
+          <div class="hero-text">
+            <p class="f-subtitle" id="e-hero-name"></p>
+            <p class="f-secondary" id="e-hero-date"></p>
+            <p class="f-secondary" id="e-hero-status"></p>
+          </div>
+        </div>
+
+        <h2 class="f-section-title">Details</h2>
+        <div class="f-stack">
+          <div class="f-card">
+            <i data-icon="edit"></i>
+            <div class="f-card-text"><span class="f-card-title">Name</span></div>
+            <div class="f-card-control"><input class="f-input name-input" id="e-name" maxlength="120" aria-label="Name" /></div>
+          </div>
+          <div class="f-card" id="e-follow-card">
+            <i data-icon="sync"></i>
+            <div class="f-card-text">
+              <span class="f-card-title">Keep release date in sync with Steam</span>
+              <span class="f-card-desc" id="e-steam-date"></span>
+            </div>
+            <div class="f-card-control">
+              <label class="f-toggle" data-on="On" data-off="Off"><input type="checkbox" id="e-follow" /><i></i></label>
+            </div>
+          </div>
+          <div class="f-card" id="e-date-card">
+            <i data-icon="calendar"></i>
+            <div class="f-card-text">
+              <span class="f-card-title">Release date</span>
+              <span class="f-card-desc">The countdown runs to midnight unless you set a time.</span>
+            </div>
+            <div class="f-card-control">
+              <input class="f-input" id="e-date" type="date" aria-label="Release date" />
+              <input class="f-input" id="e-time" type="time" aria-label="Release time" />
+            </div>
+          </div>
+        </div>
+
+        <h2 class="f-section-title">Art</h2>
+        <div class="f-card block art-picker">
+          <div class="f-row art-head">
+            <p class="f-secondary f-grow" id="e-art-hint">Pick what shows behind the countdown.</p>
+            <label class="f-btn f-file"><input id="e-art" type="file" accept="image/*" /><i data-icon="image"></i>Use my own image</label>
+          </div>
+          <div class="art-grid" id="e-art-grid" role="radiogroup" aria-label="Widget art"></div>
+          <p class="f-caption f-secondary art-status" id="e-art-status"></p>
+        </div>
+
+        <h2 class="f-section-title">&nbsp;</h2>
+        <div class="f-stack">
+          <div class="f-card">
+            <i data-icon="eye"></i>
+            <div class="f-card-text"><span class="f-card-title">Show this game on the widget now</span></div>
+            <div class="f-card-control"><button class="f-btn" id="e-show">Show</button></div>
+          </div>
+          <div class="f-card">
+            <i data-icon="delete"></i>
+            <div class="f-card-text">
+              <span class="f-card-title">Remove game</span>
+              <span class="f-card-desc">Takes it off the widget. You can always add it again.</span>
+            </div>
+            <div class="f-card-control"><button class="f-btn danger" id="e-delete">Remove</button></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Widget ---------------------------------------------------------->
+      <section class="f-page" data-page="widget" hidden>
+        <header class="f-page-header"><h1 class="f-title">Widget</h1></header>
+
+        <h2 class="f-section-title">Appearance</h2>
+        <div class="f-stack">
+          <div class="f-card">
+            <i data-icon="resize"></i>
+            <div class="f-card-text"><span class="f-card-title">Size</span></div>
+            <div class="f-card-control">
+              <select class="f-select" id="size" aria-label="Size">
+                <option value="s">Small</option>
+                <option value="m">Medium</option>
+                <option value="l">Large</option>
+              </select>
+            </div>
+          </div>
+          <div class="f-card">
+            <i data-icon="opacity"></i>
+            <div class="f-card-text"><span class="f-card-title">Opacity</span></div>
+            <div class="f-card-control">
+              <span class="f-secondary value" id="opacity-value"></span>
+              <input class="f-slider" id="opacity" type="range" min="0.35" max="1" step="0.05" aria-label="Opacity" />
+            </div>
+          </div>
+          <div class="f-card">
+            <i data-icon="color"></i>
+            <div class="f-card-text">
+              <span class="f-card-title">Accent colour</span>
+              <span class="f-card-desc">Used for the labels and highlights on the widget.</span>
+            </div>
+            <div class="f-card-control">
+              <button class="f-btn subtle" id="accent-reset">Reset</button>
+              <input class="f-color" id="accent" type="color" aria-label="Accent colour" />
+            </div>
+          </div>
+          <div class="f-card">
+            <i data-icon="timer"></i>
+            <div class="f-card-text"><span class="f-card-title">Show seconds</span></div>
+            <div class="f-card-control">
+              <label class="f-toggle" data-on="On" data-off="Off"><input type="checkbox" id="seconds" /><i></i></label>
+            </div>
+          </div>
+        </div>
+
+        <h2 class="f-section-title">Behaviour</h2>
+        <div class="f-stack">
+          <div class="f-card">
+            <i data-icon="rotate"></i>
+            <div class="f-card-text">
+              <span class="f-card-title">Cycle through games</span>
+              <span class="f-card-desc">Rotate between every game on your list.</span>
+            </div>
+            <div class="f-card-control">
+              <select class="f-select" id="rotate-seconds" aria-label="Switch every">
+                <option value="8">Every 8 seconds</option>
+                <option value="15">Every 15 seconds</option>
+                <option value="30">Every 30 seconds</option>
+                <option value="60">Every minute</option>
+                <option value="300">Every 5 minutes</option>
+              </select>
+              <label class="f-toggle" data-on="On" data-off="Off"><input type="checkbox" id="rotate" /><i></i></label>
+            </div>
+          </div>
+          <div class="f-card">
+            <i data-icon="lock"></i>
+            <div class="f-card-text">
+              <span class="f-card-title">Lock position</span>
+              <span class="f-card-desc">Stops the widget from being dragged by accident.</span>
+            </div>
+            <div class="f-card-control">
+              <label class="f-toggle" data-on="On" data-off="Off"><input type="checkbox" id="lock" /><i></i></label>
+            </div>
+          </div>
+          <div class="f-card">
+            <i data-icon="power"></i>
+            <div class="f-card-text">
+              <span class="f-card-title">Start when I sign in</span>
+              <span class="f-card-desc">So the countdown is always on your desktop.</span>
+            </div>
+            <div class="f-card-control">
+              <label class="f-toggle" data-on="On" data-off="Off"><input type="checkbox" id="autostart" /><i></i></label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- About ----------------------------------------------------------->
+      <section class="f-page" data-page="about" hidden>
+        <header class="f-page-header"><h1 class="f-title">About</h1></header>
+        <div class="f-stack">
+          <div class="f-card">
+            <img src="icon.png" alt="" class="about-icon" />
+            <div class="f-card-text">
+              <span class="f-card-title f-body-strong">Strife Delivery</span>
+              <span class="f-card-desc" id="version">Version</span>
+            </div>
+            <div class="f-card-control">
+              <div class="f-spinner" id="update-spinner" hidden></div>
+              <button class="f-btn" id="update-btn">Check for updates</button>
+            </div>
+          </div>
+          <div class="f-infobar success update-bar" id="update-bar" hidden>
+            <div class="f-infobar-text">
+              <strong id="update-title">Update available</strong><span id="update-notes"></span>
+            </div>
+          </div>
+          <div class="f-card">
+            <i data-icon="sync"></i>
+            <div class="f-card-text">
+              <span class="f-card-title">Steam release dates</span>
+              <span class="f-card-desc" id="refresh-status">Checked automatically every few hours.</span>
+            </div>
+            <div class="f-card-control">
+              <div class="f-spinner" id="refresh-spinner" hidden></div>
+              <button class="f-btn" id="refresh">Check now</button>
+            </div>
+          </div>
+          <div class="f-card">
+            <i data-icon="heart"></i>
+            <div class="f-card-text">
+              <span class="f-card-title">Made for Heather</span>
+              <span class="f-card-desc">Right-click the widget or the tray icon for quick controls.</span>
+            </div>
+          </div>
+        </div>
+        <p class="f-caption f-tertiary disclaimer">Release dates come from Steam's public store data. Not affiliated with Valve or Square Enix.</p>
+      </section>
+    </main>
+  </div>
+
+  <div class="f-infobar f-toast" id="toast" role="status"><div class="f-infobar-text" id="toast-text"></div></div>
+
+  <script src="fluent/icons.js"></script>
+  <script src="js/shared.js"></script>
+  <script src="js/settings.js"></script>
+</body>
+</html>

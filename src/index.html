@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Strife Delivery</title>
+  <link rel="stylesheet" href="css/widget.css" />
+</head>
+<body class="size-m">
+  <main id="card" class="card" aria-live="polite">
+    <div class="art" id="art"></div>
+    <div class="shade"></div>
+
+    <header class="top">
+      <div class="titles">
+        <div class="eyebrow" id="eyebrow">Countdown</div>
+        <h1 class="title" id="title">Loading…</h1>
+        <img class="logo" id="logo" alt="" hidden />
+      </div>
+      <div class="controls">
+        <button class="icon-btn" id="prev" title="Previous game" aria-label="Previous game">
+          <svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>
+        </button>
+        <button class="icon-btn" id="next" title="Next game" aria-label="Next game">
+          <svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
+        </button>
+        <button class="icon-btn" id="settings" title="Manage games" aria-label="Manage games">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <section class="count" id="count">
+      <div class="big">
+        <span class="num" id="num">—</span>
+        <span class="unit" id="unit"></span>
+      </div>
+      <div class="clock" id="clock"></div>
+    </section>
+
+    <footer class="bottom">
+      <div class="date" id="date"></div>
+      <div class="dots" id="dots"></div>
+    </footer>
+
+    <button class="empty" id="empty" hidden>
+      <span class="empty-title">No games yet</span>
+      <span class="empty-sub">Click to add one</span>
+    </button>
+  </main>
+
+  <script src="js/shared.js"></script>
+  <script src="js/widget.js"></script>
+</body>
+</html>
