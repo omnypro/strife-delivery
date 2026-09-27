@@ -6,7 +6,6 @@
 
   Fluent.applyBackdrop();
   Fluent.hydrate();
-  const syncOpacitySlider = Fluent.bindSlider($('opacity'));
 
   let state = await SD.loadState();
   let page = 'games';
@@ -193,7 +192,6 @@
         dateSource: 'steam',
         art: art.art,
         artKind: art.artKind,
-        logo: art.logo,
         artChoice: 'auto',
         addedAt: new Date().toISOString(),
       };
@@ -252,7 +250,6 @@
       dateSource: 'manual',
       art: manualArt,
       artKind: manualArt ? 'custom' : null,
-      logo: null,
       artChoice: manualArt ? 'custom' : 'auto',
       addedAt: new Date().toISOString(),
     };
@@ -350,11 +347,11 @@
 
   // --- Art picker ---------------------------------------------------------
 
-  const artCache = new Map(); // steamAppId -> { loading, options, logo, error }
+  const artCache = new Map(); // steamAppId -> { loading, options, error }
 
   function loadArtOptions(g) {
     if (!g.steamAppId || artCache.has(g.steamAppId)) return;
-    const entry = { loading: true, options: [], logo: null, error: null };
+    const entry = { loading: true, options: [], error: null };
     artCache.set(g.steamAppId, entry);
     (async () => {
       try {
@@ -369,14 +366,13 @@
   }
 
   // The automatic pick is the first of these that exists (see SD.bestSteamArt).
-  const AUTO_KINDS = ['hero', 'capsule', 'header'];
+  const AUTO_KINDS = ['cover', 'hero', 'capsule', 'header'];
 
-  function tileHtml({ id, label, thumb, logo, kind, checked }) {
-    const showLogo = logo && ['hero', 'background', 'screenshot'].includes(kind);
+  function tileHtml({ id, label, thumb, checked }) {
     const bg = thumb ? `style="background-image:url('${escapeHtml(thumb).replace(/'/g, '%27')}')"` : '';
     return `
       <button class="art-tile" role="radio" aria-checked="${checked}" data-tile="${escapeHtml(id)}">
-        <span class="art-img${thumb ? '' : ' placeholder-art'}" ${bg}>${showLogo ? `<img src="${escapeHtml(logo)}" alt="">` : ''}</span>
+        <span class="art-img${thumb ? '' : ' placeholder-art'}" ${bg}></span>
         <span class="art-label">${escapeHtml(label)}</span>
       </button>`;
   }
@@ -393,21 +389,17 @@
       const autoOpt = cache.options.find((o) => AUTO_KINDS.includes(o.kind));
       const autoThumb = choice === 'auto' ? g.art : autoOpt && autoOpt.url;
       const autoKind = choice === 'auto' ? g.artKind : autoOpt && autoOpt.kind;
-      const autoLabel = { hero: 'Library art', capsule: 'Store capsule', header: 'Store header' }[autoKind];
+      const autoLabel = { cover: 'Library cover', hero: 'Library art', capsule: 'Store capsule', header: 'Store header' }[autoKind];
       tiles.push({
         id: 'auto',
         label: autoLabel ? `Automatic · ${autoLabel}` : 'Automatic',
         thumb: autoThumb,
-        logo: g.logo || cache.logo,
-        kind: autoKind,
         checked: choice === 'auto',
       });
       cache.options.forEach((o, i) => tiles.push({
         id: `opt:${i}`,
         label: o.label,
         thumb: o.thumb,
-        logo: cache.logo,
-        kind: o.kind,
         checked: choice === 'picked' && g.art === o.url,
       }));
       if (cache.loading) status = '<span class="f-row"><span class="f-spinner"></span>Looking for art on Steam…</span>';
@@ -435,7 +427,7 @@
     const id = tile.dataset.tile;
     if (id === 'custom') return;
     if (id === 'default') {
-      return updateEditing((x) => Object.assign(x, { art: null, artKind: null, logo: null, artChoice: 'auto' }));
+      return updateEditing((x) => Object.assign(x, { art: null, artKind: null, artChoice: 'auto' }));
     }
     const cache = artCache.get(g.steamAppId);
     if (!cache) return;
@@ -444,13 +436,12 @@
       return updateEditing((x) => Object.assign(x, {
         art: opt ? opt.url : x.art,
         artKind: opt ? opt.kind : x.artKind,
-        logo: cache.logo,
         artChoice: 'auto',
       }));
     }
     const opt = cache.options[Number(id.slice(4))];
     if (opt) {
-      await updateEditing((x) => Object.assign(x, { art: opt.url, artKind: opt.kind, logo: cache.logo, artChoice: 'picked' }));
+      await updateEditing((x) => Object.assign(x, { art: opt.url, artKind: opt.kind, artChoice: 'picked' }));
     }
   });
 
@@ -494,46 +485,9 @@
   // -------------------------------------------------------------------------
 
   function renderWidget() {
-    $('size').value = state.size;
-    $('opacity').value = state.opacity ?? 1;
-    syncOpacitySlider();
-    $('opacity-value').textContent = `${Math.round((state.opacity ?? 1) * 100)}%`;
-    $('accent').value = state.accent || SD.DEFAULT_ACCENT;
-    $('seconds').checked = !!state.showSeconds;
-    $('rotate').checked = !!state.rotate;
-    $('rotate-seconds').value = String(state.rotateSeconds || 15);
-    $('rotate-seconds').disabled = !state.rotate;
     $('lock').checked = !!state.lockPosition;
   }
 
-  $('size').addEventListener('change', () => {
-    const v = $('size').value;
-    commit((s) => { s.size = v; });
-  });
-  $('opacity').addEventListener('input', () => {
-    $('opacity-value').textContent = `${Math.round(Number($('opacity').value) * 100)}%`;
-  });
-  $('opacity').addEventListener('change', () => {
-    const v = Number($('opacity').value);
-    commit((s) => { s.opacity = v; });
-  });
-  $('accent').addEventListener('change', () => {
-    const v = $('accent').value;
-    commit((s) => { s.accent = v; });
-  });
-  $('accent-reset').addEventListener('click', () => commit((s) => { s.accent = SD.DEFAULT_ACCENT; }));
-  $('seconds').addEventListener('change', () => {
-    const v = $('seconds').checked;
-    commit((s) => { s.showSeconds = v; });
-  });
-  $('rotate').addEventListener('change', () => {
-    const v = $('rotate').checked;
-    commit((s) => { s.rotate = v; });
-  });
-  $('rotate-seconds').addEventListener('change', () => {
-    const v = Number($('rotate-seconds').value);
-    commit((s) => { s.rotateSeconds = v; });
-  });
   $('lock').addEventListener('change', () => {
     const v = $('lock').checked;
     commit((s) => { s.lockPosition = v; });
@@ -583,7 +537,7 @@
     $('update-btn').textContent = 'Checking…';
     $('update-spinner').hidden = false;
     try {
-      update = await invoke('check_for_update');
+      update = (await invoke('check_for_update')) || update;
       if (!update.version && !quiet) toast("You're up to date");
     } catch (err) {
       if (!quiet) toast(errText(err), 'critical');
@@ -622,7 +576,7 @@
   });
 
   try {
-    update = await invoke('update_status');
+    update = (await invoke('update_status')) || update;
   } catch {
     // Older backend / browser preview: leave the defaults.
   }

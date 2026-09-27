@@ -5,14 +5,6 @@
   const invoke = (cmd, args) => tauri.core.invoke(cmd, args);
   const listen = (event, cb) => tauri.event.listen(event, (e) => cb(e.payload));
 
-  const SIZES = {
-    s: { width: 320, height: 190, label: 'Small' },
-    m: { width: 404, height: 239, label: 'Medium' },
-    l: { width: 500, height: 294, label: 'Large' },
-  };
-
-  const DEFAULT_ACCENT = '#5ef0b8';
-
   function uid() {
     return Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
   }
@@ -22,12 +14,6 @@
       version: 1,
       games: [],
       activeId: null,
-      size: 'm',
-      opacity: 1,
-      accent: DEFAULT_ACCENT,
-      showSeconds: true,
-      rotate: false,
-      rotateSeconds: 15,
       lockPosition: false,
       lastSteamRefresh: null,
     };
@@ -42,7 +28,6 @@
       if (!g.artChoice) g.artChoice = g.customArt ? 'custom' : 'auto';
       delete g.customArt;
     }
-    if (!SIZES[out.size]) out.size = 'm';
     if (out.games.length && !out.games.some((g) => g.id === out.activeId)) {
       out.activeId = out.games[0].id;
     }
@@ -132,7 +117,7 @@
       case 'year':
         return String(d.getFullYear());
       default: {
-        const opts = { weekday: 'short', month: 'long', day: 'numeric', year: 'numeric' };
+        const opts = { month: 'long', day: 'numeric', year: 'numeric' };
         const hasTime = d.getHours() || d.getMinutes();
         const date = d.toLocaleDateString(undefined, opts);
         return hasTime
@@ -181,7 +166,7 @@
   // Steam art
   //
   // The store API only hands out the small header (460x215), screenshots and
-  // page backgrounds. The nicer library art (wide hero, transparent logo, big
+  // page backgrounds. The nicer library art (portrait cover, wide hero, big
   // capsule) lives at predictable CDN paths *for most games*, but newer
   // uploads sit behind hashed paths and unreleased games often don't have
   // library art yet, so every guess is probed and we fall back gracefully.
@@ -191,11 +176,6 @@
     'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps',
     'https://cdn.akamai.steamstatic.com/steam/apps',
   ];
-
-  // Art kinds that don't already have the game's logo painted on them, so the
-  // widget overlays the transparent logo instead of the plain-text title.
-  const LOGO_FRIENDLY = new Set(['hero', 'background', 'screenshot']);
-  const showsLogo = (game) => !!(game && game.logo && LOGO_FRIENDLY.has(game.artKind));
 
   /** Resolve with {width, height} if the image loads, else null. */
   function probeImage(url, timeoutMs = 8000) {
@@ -219,14 +199,15 @@
     return null;
   }
 
-  /** Every usable image for a Steam game, best first. */
+  /** Every usable image for a Steam game, best first for a square crop. */
   async function steamArtOptions(appid, details) {
-    const [hero, capsule, logo] = await Promise.all([
+    const [cover, hero, capsule] = await Promise.all([
+      findCdnAsset(appid, 'library_600x900.jpg', 300),
       findCdnAsset(appid, 'library_hero.jpg', 900),
       findCdnAsset(appid, 'capsule_616x353.jpg', 600),
-      findCdnAsset(appid, 'logo.png'),
     ]);
     const options = [];
+    if (cover) options.push({ kind: 'cover', label: 'Library cover', url: cover, thumb: cover });
     if (hero) options.push({ kind: 'hero', label: 'Library art', url: hero, thumb: hero });
     if (capsule) options.push({ kind: 'capsule', label: 'Store capsule', url: capsule, thumb: capsule });
     if (details.headerImage) {
@@ -246,20 +227,19 @@
         options.push({ kind: 'screenshot', label: `Screenshot ${i + 1}`, url: shot.full, thumb: shot.thumb || shot.full });
       }
     });
-    return { options, logo };
+    return { options };
   }
 
-  /** The automatic pick: library hero, then big capsule, then the header. */
+  /** The automatic pick: library cover, then hero, then capsule, then the header. */
   async function bestSteamArt(appid, details) {
-    const [hero, logo] = await Promise.all([
-      findCdnAsset(appid, 'library_hero.jpg', 900),
-      findCdnAsset(appid, 'logo.png'),
-    ]);
-    if (hero) return { art: hero, artKind: 'hero', logo };
+    const cover = await findCdnAsset(appid, 'library_600x900.jpg', 300);
+    if (cover) return { art: cover, artKind: 'cover' };
+    const hero = await findCdnAsset(appid, 'library_hero.jpg', 900);
+    if (hero) return { art: hero, artKind: 'hero' };
     const capsule = await findCdnAsset(appid, 'capsule_616x353.jpg', 600);
-    if (capsule) return { art: capsule, artKind: 'capsule', logo };
-    if (details.headerImage) return { art: details.headerImage, artKind: 'header', logo };
-    return { art: null, artKind: null, logo };
+    if (capsule) return { art: capsule, artKind: 'capsule' };
+    if (details.headerImage) return { art: details.headerImage, artKind: 'header' };
+    return { art: null, artKind: null };
   }
 
   /**
@@ -283,7 +263,7 @@
         }
         if (autoArt) {
           const art = await bestSteamArt(game.steamAppId, fresh.details);
-          if (art.art && (art.art !== game.art || art.logo !== game.logo)) Object.assign(upd, art);
+          if (art.art && art.art !== game.art) Object.assign(upd, art);
         }
         if (Object.keys(upd).length) updates.set(game.id, upd);
       } catch (err) {
@@ -300,7 +280,7 @@
         Object.assign(g, { rawDate: upd.rawDate, releaseDate: upd.releaseDate, precision: upd.precision });
       }
       if ((g.artChoice || 'auto') === 'auto' && 'art' in upd) {
-        Object.assign(g, { art: upd.art, artKind: upd.artKind, logo: upd.logo });
+        Object.assign(g, { art: upd.art, artKind: upd.artKind });
       }
     }
     latest.lastSteamRefresh = new Date().toISOString();
@@ -343,10 +323,10 @@
   }
 
   window.SD = {
-    invoke, listen, SIZES, DEFAULT_ACCENT, uid,
+    invoke, listen, uid,
     defaultState, normalizeState, loadState, saveState,
     parseSteamDate, toDate, describeDate, countdown,
-    steamGame, steamArtOptions, bestSteamArt, showsLogo, probeImage,
+    steamGame, steamArtOptions, bestSteamArt, probeImage,
     refreshSteamDates, imageFileToDataUrl, escapeHtml,
   };
 })();

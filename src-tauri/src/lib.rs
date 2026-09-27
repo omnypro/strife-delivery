@@ -16,7 +16,7 @@ use tauri::{
     menu::{CheckMenuItem, Menu, MenuItem, PredefinedMenuItem},
     tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent},
     window::{Effect, EffectsBuilder},
-    AppHandle, Emitter, LogicalSize, Manager, WebviewUrl, WebviewWindow, WebviewWindowBuilder,
+    AppHandle, Emitter, Manager, WebviewUrl, WebviewWindow, WebviewWindowBuilder,
     WindowEvent, Wry,
 };
 use tauri_plugin_autostart::{MacosLauncher, ManagerExt};
@@ -178,13 +178,6 @@ fn show_widget(app: AppHandle) {
     if let Some(w) = app.get_webview_window(WIDGET) {
         let _ = w.show();
         let _ = w.set_always_on_bottom(true);
-    }
-}
-
-#[tauri::command]
-fn resize_widget(app: AppHandle, width: f64, height: f64) {
-    if let Some(w) = app.get_webview_window(WIDGET) {
-        let _ = w.set_size(LogicalSize::new(width, height));
     }
 }
 
@@ -445,7 +438,6 @@ pub fn run() {
             steam_details,
             open_settings,
             show_widget,
-            resize_widget,
             start_drag,
             show_context_menu,
             get_autostart,

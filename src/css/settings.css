@@ -46,7 +46,7 @@
 .art-head { margin-bottom: 12px; }
 .art-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
   gap: 12px;
 }
 .art-tile {
@@ -64,21 +64,11 @@
 }
 .art-tile .art-img {
   position: relative;
-  aspect-ratio: 16 / 9;
+  aspect-ratio: 1;
   border-radius: var(--f-radius-control);
   background: var(--f-control-alt) center / cover no-repeat;
   border: 1px solid var(--f-card-stroke);
   overflow: hidden;
-}
-.art-tile .art-img img {
-  position: absolute;
-  left: 8%;
-  top: 12%;
-  max-width: 60%;
-  max-height: 40%;
-  object-fit: contain;
-  object-position: left center;
-  filter: drop-shadow(0 1px 4px rgba(0, 0, 0, .6));
 }
 .art-tile:hover .art-img { filter: brightness(1.06); }
 .art-tile[aria-checked="true"] .art-img {

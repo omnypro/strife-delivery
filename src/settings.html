@@ -138,7 +138,7 @@
         <h2 class="f-section-title">Art</h2>
         <div class="f-card block art-picker">
           <div class="f-row art-head">
-            <p class="f-secondary f-grow" id="e-art-hint">Pick what shows behind the countdown.</p>
+            <p class="f-secondary f-grow" id="e-art-hint">Pick the art that sits next to the countdown.</p>
             <label class="f-btn f-file"><input id="e-art" type="file" accept="image/*" /><i data-icon="image"></i>Use my own image</label>
           </div>
           <div class="art-grid" id="e-art-grid" role="radiogroup" aria-label="Widget art"></div>
@@ -167,66 +167,7 @@
       <section class="f-page" data-page="widget" hidden>
         <header class="f-page-header"><h1 class="f-title">Widget</h1></header>
 
-        <h2 class="f-section-title">Appearance</h2>
         <div class="f-stack">
-          <div class="f-card">
-            <i data-icon="resize"></i>
-            <div class="f-card-text"><span class="f-card-title">Size</span></div>
-            <div class="f-card-control">
-              <select class="f-select" id="size" aria-label="Size">
-                <option value="s">Small</option>
-                <option value="m">Medium</option>
-                <option value="l">Large</option>
-              </select>
-            </div>
-          </div>
-          <div class="f-card">
-            <i data-icon="opacity"></i>
-            <div class="f-card-text"><span class="f-card-title">Opacity</span></div>
-            <div class="f-card-control">
-              <span class="f-secondary value" id="opacity-value"></span>
-              <input class="f-slider" id="opacity" type="range" min="0.35" max="1" step="0.05" aria-label="Opacity" />
-            </div>
-          </div>
-          <div class="f-card">
-            <i data-icon="color"></i>
-            <div class="f-card-text">
-              <span class="f-card-title">Accent colour</span>
-              <span class="f-card-desc">Used for the labels and highlights on the widget.</span>
-            </div>
-            <div class="f-card-control">
-              <button class="f-btn subtle" id="accent-reset">Reset</button>
-              <input class="f-color" id="accent" type="color" aria-label="Accent colour" />
-            </div>
-          </div>
-          <div class="f-card">
-            <i data-icon="timer"></i>
-            <div class="f-card-text"><span class="f-card-title">Show seconds</span></div>
-            <div class="f-card-control">
-              <label class="f-toggle" data-on="On" data-off="Off"><input type="checkbox" id="seconds" /><i></i></label>
-            </div>
-          </div>
-        </div>
-
-        <h2 class="f-section-title">Behaviour</h2>
-        <div class="f-stack">
-          <div class="f-card">
-            <i data-icon="rotate"></i>
-            <div class="f-card-text">
-              <span class="f-card-title">Cycle through games</span>
-              <span class="f-card-desc">Rotate between every game on your list.</span>
-            </div>
-            <div class="f-card-control">
-              <select class="f-select" id="rotate-seconds" aria-label="Switch every">
-                <option value="8">Every 8 seconds</option>
-                <option value="15">Every 15 seconds</option>
-                <option value="30">Every 30 seconds</option>
-                <option value="60">Every minute</option>
-                <option value="300">Every 5 minutes</option>
-              </select>
-              <label class="f-toggle" data-on="On" data-off="Off"><input type="checkbox" id="rotate" /><i></i></label>
-            </div>
-          </div>
           <div class="f-card">
             <i data-icon="lock"></i>
             <div class="f-card-text">
