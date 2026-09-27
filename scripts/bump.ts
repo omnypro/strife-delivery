@@ -72,7 +72,7 @@ await Bun.write(msg, `Bump to ${next}.\n`);
 await $`git add ${pkgPath} ${cargoPath} ${lockPath}`;
 await $`git commit -F ${msg}`;
 await $`rm -f ${msg}`;
-await $`git tag ${tag}`;
+await $`git tag -s ${tag} -m ${`Strife Delivery ${next}`}`;
 
 console.log(`\n${current} -> ${next}, committed and tagged ${tag}.`);
 console.log(`Push when you're ready:  git push; and git push origin ${tag}`);
