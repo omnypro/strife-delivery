@@ -27,6 +27,8 @@ jobs:
     runs-on: ${{ matrix.platform }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # full history + tags, for the release notes
 
       - uses: oven-sh/setup-bun@v2
 
@@ -52,6 +54,18 @@ jobs:
             echo "args=--config src-tauri/tauri.updater.conf.json" >> "$GITHUB_OUTPUT"
           fi
 
+      # Release notes are the commits since the previous tag (minus version
+      # bumps). They're also what the in-app updater shows as "what's new".
+      - name: Release notes
+        id: notes
+        if: startsWith(github.ref, 'refs/tags/v')
+        shell: bash
+        run: |
+          prev=$(git describe --tags --abbrev=0 --match 'v*' "${GITHUB_REF_NAME}^" 2>/dev/null || true)
+          notes=$(git log --no-merges --format='- %s' "${prev:+$prev..}${GITHUB_REF_NAME}" | grep -v '^- Bump to ' || true)
+          delim="notes_$RANDOM$RANDOM"
+          { echo "body<<$delim"; echo "$notes"; echo "$delim"; } >> "$GITHUB_OUTPUT"
+
       - uses: tauri-apps/tauri-action@v0
         id: tauri
         env:
@@ -64,12 +78,7 @@ jobs:
           includeUpdaterJson: true
           tagName: ${{ startsWith(github.ref, 'refs/tags/v') && github.ref_name || '' }}
           releaseName: "Strife Delivery ${{ github.ref_name }}"
-          releaseBody: |
-            **Windows:** download the `_x64-setup.exe` below and run it.
-            Windows SmartScreen may warn that the app is unrecognised (it isn't code-signed):
-            click **More info → Run anyway**.
-
-            **macOS:** download the `.dmg`. It isn't notarised, so right-click the app → **Open** the first time.
+          releaseBody: ${{ steps.notes.outputs.body }}
           releaseDraft: false
           prerelease: false
 
