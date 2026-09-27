@@ -1,6 +1,6 @@
 [package]
 name = "strife-delivery"
-version = "0.1.0"
+version = "0.1.1"
 description = "A desktop countdown widget for the games you're waiting on."
 authors = ["omnypro"]
 edition = "2021"

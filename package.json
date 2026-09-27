@@ -1,7 +1,7 @@
 {
   "name": "strife-delivery",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A desktop countdown widget for the games you're waiting on.",
   "scripts": {
     "tauri": "tauri",
