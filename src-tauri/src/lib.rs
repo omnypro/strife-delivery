@@ -133,8 +133,14 @@ async fn steam_details(appid: u64) -> Result<Value, String> {
         "https://store.steampowered.com/api/appdetails?appids={appid}&cc=us&l=en"
     );
     let body = steam_get(&url).await?;
-    let entry = body
-        .get(appid.to_string())
+    // Steam doesn't always key the response by the id we asked for (Hollow
+    // Knight comes back under one of its DLC ids), so match on steam_appid and
+    // fall back to the only entry.
+    let entries = body.as_object().ok_or("Steam didn't return that game")?;
+    let entry = entries
+        .values()
+        .find(|e| e.pointer("/data/steam_appid").and_then(Value::as_u64) == Some(appid))
+        .or_else(|| (entries.len() == 1).then(|| entries.values().next()).flatten())
         .ok_or("Steam didn't return that game")?;
     if entry.get("success").and_then(Value::as_bool) != Some(true) {
         return Err("Steam doesn't have details for that game (it may be region-locked or delisted)".into());
