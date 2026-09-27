@@ -1,0 +1,725 @@
+/*
+ * fluent.css: a small Windows 11 (Fluent 2 / WinUI 3) look-alike kit for
+ * Tauri and other webview apps. No build step, no dependencies.
+ *
+ * Put `data-backdrop="mica" | "vibrancy" | "none"` on <body> to match what
+ * the native window is doing (see README.md). Everything is prefixed `f-`.
+ */
+
+/* ======================================================================== */
+/* Tokens                                                                   */
+/* ======================================================================== */
+
+:root {
+  color-scheme: light dark;
+
+  --f-font: "Segoe UI Variable Text", "Segoe UI Variable", "Segoe UI", -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, Ubuntu, sans-serif;
+  --f-font-display: "Segoe UI Variable Display", "Segoe UI Variable", "Segoe UI", -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, Ubuntu, sans-serif;
+
+  --f-radius-control: 4px;
+  --f-radius-overlay: 8px;
+
+  /* Light theme (WinUI values) */
+  --f-text-1: rgba(0, 0, 0, .896);
+  --f-text-2: rgba(0, 0, 0, .606);
+  --f-text-3: rgba(0, 0, 0, .446);
+  --f-text-disabled: rgba(0, 0, 0, .361);
+  --f-text-on-accent: #ffffff;
+
+  --f-accent: #005fb8;
+  --f-accent-hover: rgba(0, 95, 184, .9);
+  --f-accent-pressed: rgba(0, 95, 184, .8);
+  --f-accent-text: #003e92;
+
+  --f-solid-bg: #f3f3f3;
+  --f-layer: rgba(255, 255, 255, .5);
+  --f-card: rgba(255, 255, 255, .7);
+  --f-card-hover: rgba(249, 249, 249, .5);
+  --f-card-stroke: rgba(0, 0, 0, .0578);
+
+  --f-control: rgba(255, 255, 255, .7);
+  --f-control-hover: rgba(249, 249, 249, .5);
+  --f-control-pressed: rgba(249, 249, 249, .3);
+  --f-control-disabled: rgba(249, 249, 249, .3);
+  --f-control-focus: #ffffff;
+  --f-control-stroke: rgba(0, 0, 0, .0578);
+  --f-control-stroke-bottom: rgba(0, 0, 0, .1622);
+  --f-control-strong: rgba(0, 0, 0, .4458);
+  --f-control-strong-fill: rgba(0, 0, 0, .6063);
+  --f-control-alt: rgba(0, 0, 0, .0241);
+  --f-textbox-bottom: rgba(0, 0, 0, .4458);
+
+  --f-subtle-hover: rgba(0, 0, 0, .0373);
+  --f-subtle-pressed: rgba(0, 0, 0, .0241);
+  --f-divider: rgba(0, 0, 0, .0803);
+
+  --f-knob-on: #ffffff;
+  --f-focus-outer: rgba(0, 0, 0, .896);
+  --f-focus-inner: #ffffff;
+
+  --f-success-bg: #dff6dd;
+  --f-success-fg: #0f7b0f;
+  --f-caution-bg: #fff4ce;
+  --f-caution-fg: #9d5d00;
+  --f-critical-bg: #fde7e9;
+  --f-critical-fg: #c42b1c;
+  --f-info-bg: rgba(246, 246, 246, .5);
+  --f-info-fg: #005fb8;
+
+  --f-shadow-flyout: 0 8px 16px rgba(0, 0, 0, .14);
+  --f-shadow-dialog: 0 32px 64px rgba(0, 0, 0, .1876), 0 2px 21px rgba(0, 0, 0, .1474);
+  --f-smoke: rgba(0, 0, 0, .3);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --f-text-1: #ffffff;
+    --f-text-2: rgba(255, 255, 255, .786);
+    --f-text-3: rgba(255, 255, 255, .544);
+    --f-text-disabled: rgba(255, 255, 255, .363);
+    --f-text-on-accent: #000000;
+
+    --f-accent: #60cdff;
+    --f-accent-hover: rgba(96, 205, 255, .9);
+    --f-accent-pressed: rgba(96, 205, 255, .8);
+    --f-accent-text: #99ebff;
+
+    --f-solid-bg: #202020;
+    --f-layer: rgba(58, 58, 58, .3);
+    --f-card: rgba(255, 255, 255, .0512);
+    --f-card-hover: rgba(255, 255, 255, .0837);
+    --f-card-stroke: rgba(0, 0, 0, .1);
+
+    --f-control: rgba(255, 255, 255, .0605);
+    --f-control-hover: rgba(255, 255, 255, .0837);
+    --f-control-pressed: rgba(255, 255, 255, .0326);
+    --f-control-disabled: rgba(255, 255, 255, .0419);
+    --f-control-focus: #1e1e1e;
+    --f-control-stroke: rgba(255, 255, 255, .0698);
+    --f-control-stroke-bottom: rgba(255, 255, 255, .0465);
+    --f-control-strong: rgba(255, 255, 255, .5442);
+    --f-control-strong-fill: rgba(255, 255, 255, .786);
+    --f-control-alt: rgba(0, 0, 0, .1);
+    --f-textbox-bottom: rgba(255, 255, 255, .5442);
+
+    --f-subtle-hover: rgba(255, 255, 255, .0605);
+    --f-subtle-pressed: rgba(255, 255, 255, .0419);
+    --f-divider: rgba(255, 255, 255, .0837);
+
+    --f-knob-on: #000000;
+    --f-focus-outer: #ffffff;
+    --f-focus-inner: rgba(0, 0, 0, .7);
+
+    --f-success-bg: #393d1b;
+    --f-success-fg: #6ccb5f;
+    --f-caution-bg: #433519;
+    --f-caution-fg: #fce100;
+    --f-critical-bg: #442726;
+    --f-critical-fg: #ff99a4;
+    --f-info-bg: rgba(255, 255, 255, .0326);
+    --f-info-fg: #60cdff;
+
+    --f-shadow-flyout: 0 8px 16px rgba(0, 0, 0, .26);
+    --f-shadow-dialog: 0 32px 64px rgba(0, 0, 0, .56), 0 2px 21px rgba(0, 0, 0, .55);
+    --f-smoke: rgba(0, 0, 0, .5);
+  }
+}
+
+/* ======================================================================== */
+/* Base                                                                     */
+/* ======================================================================== */
+
+.f-app, .f-app * { box-sizing: border-box; }
+
+.f-app {
+  margin: 0;
+  min-height: 100vh;
+  font: 14px/20px var(--f-font);
+  color: var(--f-text-1);
+  background: var(--f-solid-bg);
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: default;
+}
+/* Let the native backdrop (Mica / vibrancy) show through. */
+.f-app[data-backdrop="mica"],
+.f-app[data-backdrop="vibrancy"] { background: transparent; }
+
+.f-app input, .f-app textarea, .f-app [contenteditable] { user-select: text; -webkit-user-select: text; }
+.f-app h1, .f-app h2, .f-app h3, .f-app p { margin: 0; }
+.f-app [hidden] { display: none !important; }
+
+.f-app :focus { outline: none; }
+.f-app :focus-visible {
+  outline: 2px solid var(--f-focus-outer);
+  outline-offset: 1px;
+  box-shadow: 0 0 0 1px var(--f-focus-inner);
+}
+
+.f-app ::-webkit-scrollbar { width: 12px; height: 12px; }
+.f-app ::-webkit-scrollbar-thumb {
+  background: var(--f-control-strong);
+  border: 4px solid transparent;
+  border-radius: 8px;
+  background-clip: padding-box;
+  min-height: 40px;
+}
+.f-app ::-webkit-scrollbar-thumb:hover { border-width: 3px; }
+.f-app ::-webkit-scrollbar-track { background: transparent; }
+
+/* Type ramp */
+.f-caption { font-size: 12px; line-height: 16px; }
+.f-body-strong { font-weight: 600; }
+.f-subtitle { font: 600 20px/28px var(--f-font-display); }
+.f-title { font: 600 28px/36px var(--f-font-display); }
+.f-title-large { font: 600 40px/52px var(--f-font-display); }
+.f-secondary { color: var(--f-text-2); }
+.f-tertiary { color: var(--f-text-3); }
+
+/* Icons (see icons.js) */
+.f-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  display: inline-block;
+  vertical-align: middle;
+}
+.f-icon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.f-icon.lg { width: 20px; height: 20px; }
+
+/* ======================================================================== */
+/* Shell: nav pane + content                                                */
+/* ======================================================================== */
+
+.f-shell {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  height: 100vh;
+}
+
+.f-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 8px 12px 4px;
+  overflow-y: auto;
+}
+.f-nav-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 4px 12px 16px 16px;
+  min-height: 48px;
+}
+.f-nav-header img { width: 32px; height: 32px; }
+.f-nav-spacer { flex: 1; }
+
+.f-nav-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  height: 36px;
+  padding: 0 12px 0 16px;
+  margin-left: 4px;
+  border: 0;
+  border-radius: var(--f-radius-control);
+  background: transparent;
+  color: var(--f-text-1);
+  font: inherit;
+  text-align: left;
+  cursor: default;
+}
+.f-nav-item:hover { background: var(--f-subtle-hover); }
+.f-nav-item:active { background: var(--f-subtle-pressed); color: var(--f-text-2); }
+.f-nav-item[aria-current="page"] { background: var(--f-subtle-hover); }
+.f-nav-item[aria-current="page"]::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 3px;
+  height: 16px;
+  margin-top: -8px;
+  border-radius: 2px;
+  background: var(--f-accent);
+}
+.f-nav-item .f-nav-label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.f-content {
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0 40px 40px 28px;
+}
+.f-page { max-width: 1000px; }
+
+.f-page-header {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  min-height: 80px;
+  padding: 28px 0 20px;
+}
+.f-page-header .f-title { flex: 1; min-width: 0; }
+
+.f-breadcrumb {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+}
+.f-breadcrumb a {
+  color: var(--f-text-2);
+  text-decoration: none;
+  cursor: default;
+  border-radius: var(--f-radius-control);
+}
+.f-breadcrumb a:hover { color: var(--f-text-1); }
+.f-breadcrumb .f-icon { width: 14px; height: 14px; color: var(--f-text-2); }
+.f-breadcrumb > span:last-child {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+/* Collapse to a compact rail on narrow windows. */
+@media (max-width: 760px) {
+  .f-shell { grid-template-columns: 56px 1fr; }
+  .f-nav { padding-right: 4px; }
+  .f-nav-header .f-nav-title, .f-nav-item .f-nav-label { display: none; }
+  .f-nav-header { padding-left: 12px; }
+  .f-nav-item { padding: 0; justify-content: center; }
+  .f-content { padding: 0 20px 28px 16px; }
+}
+
+/* ======================================================================== */
+/* Setting cards                                                            */
+/* ======================================================================== */
+
+.f-app .f-section-title {
+  font: 600 14px/20px var(--f-font);
+  margin: 28px 0 8px 1px;
+}
+.f-app .f-section-title:first-child { margin-top: 0; }
+
+.f-stack { display: flex; flex-direction: column; gap: 4px; }
+
+.f-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-height: 68px;
+  padding: 12px 16px;
+  background: var(--f-card);
+  border: 1px solid var(--f-card-stroke);
+  border-radius: var(--f-radius-control);
+  background-clip: padding-box;
+}
+.f-card.compact { min-height: 52px; padding-top: 8px; padding-bottom: 8px; }
+.f-card.clickable:hover { background: var(--f-card-hover); }
+.f-card.clickable:active { background: var(--f-control-pressed); }
+.f-card > .f-icon { width: 20px; height: 20px; }
+.f-card-text { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.f-card-title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.f-card-desc { font-size: 12px; line-height: 16px; color: var(--f-text-2); }
+.f-card-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.f-card-chevron { color: var(--f-text-2); }
+
+/* Card whose body is free-form (forms, lists). */
+.f-card.block { display: block; padding: 16px; }
+
+/* Media thumbnail inside a card. */
+.f-thumb {
+  width: 88px;
+  height: 41px;
+  flex-shrink: 0;
+  border-radius: var(--f-radius-control);
+  background: var(--f-control-alt) center / cover no-repeat;
+  border: 1px solid var(--f-card-stroke);
+}
+.f-thumb.lg { width: 230px; height: 108px; }
+
+/* ======================================================================== */
+/* Buttons                                                                  */
+/* ======================================================================== */
+
+.f-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 32px;
+  padding: 5px 11px 6px;
+  font: inherit;
+  color: var(--f-text-1);
+  background: var(--f-control);
+  border: 1px solid var(--f-control-stroke);
+  border-bottom-color: var(--f-control-stroke-bottom);
+  border-radius: var(--f-radius-control);
+  background-clip: padding-box;
+  white-space: nowrap;
+  cursor: default;
+}
+.f-btn:hover { background: var(--f-control-hover); }
+.f-btn:active { background: var(--f-control-pressed); color: var(--f-text-2); border-bottom-color: var(--f-control-stroke); }
+.f-btn:disabled { background: var(--f-control-disabled); color: var(--f-text-disabled); border-color: var(--f-control-stroke); }
+
+.f-btn.accent {
+  background: var(--f-accent);
+  color: var(--f-text-on-accent);
+  border-color: rgba(255, 255, 255, .08);
+  border-bottom-color: rgba(0, 0, 0, .4);
+}
+.f-btn.accent:hover { background: var(--f-accent-hover); }
+.f-btn.accent:active { background: var(--f-accent-pressed); color: var(--f-text-on-accent); opacity: .9; border-bottom-color: rgba(255, 255, 255, .08); }
+.f-btn.accent:disabled { background: var(--f-control-strong); color: var(--f-text-on-accent); opacity: .5; border-color: transparent; }
+
+.f-btn.subtle { background: transparent; border-color: transparent; }
+.f-btn.subtle:hover { background: var(--f-subtle-hover); }
+.f-btn.subtle:active { background: var(--f-subtle-pressed); }
+
+.f-btn.icon { padding: 0; width: 32px; }
+.f-btn.danger { color: var(--f-critical-fg); }
+
+.f-link {
+  color: var(--f-accent-text);
+  text-decoration: none;
+  cursor: pointer;
+  border: 0;
+  background: none;
+  font: inherit;
+  padding: 0;
+}
+.f-link:hover { text-decoration: underline; }
+
+/* ======================================================================== */
+/* Toggle switch: <label class="f-toggle"><input type="checkbox"><i></i></label> */
+/* ======================================================================== */
+
+.f-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  cursor: default;
+}
+.f-toggle input { position: absolute; opacity: 0; width: 0; height: 0; margin: 0; }
+.f-toggle::before {
+  content: attr(data-off);
+  min-width: 24px;
+  text-align: right;
+  color: var(--f-text-1);
+}
+.f-toggle:has(input:checked)::before { content: attr(data-on); }
+.f-toggle i {
+  position: relative;
+  width: 40px;
+  height: 20px;
+  border-radius: 10px;
+  border: 1px solid var(--f-control-strong);
+  background: var(--f-control-alt);
+  transition: background .1s;
+}
+.f-toggle i::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 3px;
+  width: 12px;
+  height: 12px;
+  margin-top: -6px;
+  border-radius: 6px;
+  background: var(--f-control-strong-fill);
+  transition: left .15s cubic-bezier(.55, .55, 0, 1), width .1s, height .1s, margin .1s;
+}
+.f-toggle:hover i { background: var(--f-subtle-hover); }
+.f-toggle:hover i::after { width: 14px; height: 14px; margin-top: -7px; left: 2px; }
+.f-toggle:active i::after { width: 17px; }
+.f-toggle input:checked + i { background: var(--f-accent); border-color: var(--f-accent); }
+.f-toggle input:checked + i::after { left: 23px; background: var(--f-knob-on); }
+.f-toggle:hover input:checked + i { background: var(--f-accent-hover); }
+.f-toggle:hover input:checked + i::after { left: 22px; }
+.f-toggle:active input:checked + i::after { left: 19px; }
+.f-toggle input:focus-visible + i { outline: 2px solid var(--f-focus-outer); outline-offset: 2px; }
+.f-toggle input:disabled + i { opacity: .4; }
+
+/* Checkbox */
+.f-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 32px;
+}
+.f-check input {
+  appearance: none;
+  -webkit-appearance: none;
+  margin: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: var(--f-radius-control);
+  border: 1px solid var(--f-control-strong);
+  background: var(--f-control-alt);
+  display: grid;
+  place-items: center;
+}
+.f-check input:hover { background: var(--f-subtle-hover); }
+.f-check input:checked {
+  background: var(--f-accent) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 8.5l3 3 6-7' fill='none' stroke='white' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 14px no-repeat;
+  border-color: var(--f-accent);
+}
+@media (prefers-color-scheme: dark) {
+  .f-check input:checked {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 8.5l3 3 6-7' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  }
+}
+
+/* ======================================================================== */
+/* Text inputs + select                                                     */
+/* ======================================================================== */
+
+.f-field { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.f-field > span { color: var(--f-text-1); }
+
+.f-input, .f-select {
+  min-height: 32px;
+  padding: 5px 11px 6px;
+  font: inherit;
+  color: var(--f-text-1);
+  background: var(--f-control);
+  border: 1px solid var(--f-control-stroke);
+  border-bottom-color: var(--f-textbox-bottom);
+  border-radius: var(--f-radius-control);
+  background-clip: padding-box;
+  min-width: 0;
+}
+.f-input::placeholder { color: var(--f-text-2); }
+.f-input:hover { background: var(--f-control-hover); }
+.f-input:focus {
+  background: var(--f-control-focus);
+  border-bottom: 2px solid var(--f-accent);
+  padding-bottom: 5px;
+  outline: none;
+  box-shadow: none;
+}
+.f-input:focus-visible { outline: none; box-shadow: none; }
+.f-input::-webkit-calendar-picker-indicator { opacity: .6; }
+.f-input[type="search"]::-webkit-search-cancel-button { opacity: .6; }
+.f-input:disabled { background: var(--f-control-disabled); color: var(--f-text-disabled); border-bottom-color: var(--f-control-stroke); }
+
+.f-select {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 34px;
+  border-bottom-color: var(--f-control-stroke-bottom);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 6l4 4 4-4' fill='none' stroke='%23808080' stroke-width='1.3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 12px;
+  min-width: 120px;
+}
+.f-select:hover { background-color: var(--f-control-hover); }
+.f-select option { background: var(--f-solid-bg); color: var(--f-text-1); }
+
+/* Search box with a leading icon */
+.f-search { position: relative; display: flex; flex: 1; min-width: 0; }
+.f-search .f-input { flex: 1; padding-left: 34px; }
+.f-search .f-icon {
+  position: absolute;
+  left: 11px;
+  top: 50%;
+  margin-top: -8px;
+  color: var(--f-text-2);
+  pointer-events: none;
+}
+
+/* File picker that looks like a button: <label class="f-btn f-file"><input type="file">Browse</label> */
+.f-file input { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.f-file:has(input:focus-visible) { outline: 2px solid var(--f-focus-outer); outline-offset: 1px; }
+
+/* Colour swatch picker */
+.f-color {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 44px;
+  height: 32px;
+  padding: 3px;
+  border: 1px solid var(--f-control-stroke);
+  border-bottom-color: var(--f-control-stroke-bottom);
+  border-radius: var(--f-radius-control);
+  background: var(--f-control);
+}
+.f-color::-webkit-color-swatch-wrapper { padding: 0; }
+.f-color::-webkit-color-swatch { border: 0; border-radius: 2px; }
+
+/* ======================================================================== */
+/* Slider: <input type="range" class="f-slider"> (JS sets --f-fill: 0-100%) */
+/* ======================================================================== */
+
+.f-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 200px;
+  height: 32px;
+  margin: 0;
+  background: transparent;
+  --f-fill: 50%;
+}
+.f-slider::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(to right, var(--f-accent) 0 var(--f-fill), var(--f-control-strong) var(--f-fill) 100%);
+}
+.f-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  margin-top: -8px;
+  border-radius: 50%;
+  background: var(--f-control-focus);
+  border: 1px solid var(--f-control-stroke);
+  box-shadow: inset 0 0 0 4px var(--f-control-focus), inset 0 0 0 10px var(--f-accent), 0 1px 2px rgba(0, 0, 0, .15);
+  transition: box-shadow .1s;
+}
+.f-slider:hover::-webkit-slider-thumb {
+  box-shadow: inset 0 0 0 3px var(--f-control-focus), inset 0 0 0 10px var(--f-accent), 0 1px 2px rgba(0, 0, 0, .15);
+}
+.f-slider:active::-webkit-slider-thumb {
+  box-shadow: inset 0 0 0 5px var(--f-control-focus), inset 0 0 0 10px var(--f-accent-pressed), 0 1px 2px rgba(0, 0, 0, .15);
+}
+.f-slider:focus-visible { outline: none; box-shadow: none; }
+.f-slider:focus-visible::-webkit-slider-thumb { outline: 2px solid var(--f-focus-outer); outline-offset: 1px; }
+
+/* ======================================================================== */
+/* Segmented control: <div class="f-segmented"><button aria-pressed="true"> */
+/* ======================================================================== */
+
+.f-segmented {
+  display: inline-flex;
+  padding: 2px;
+  gap: 2px;
+  border-radius: var(--f-radius-control);
+  background: var(--f-control-alt);
+  border: 1px solid var(--f-control-stroke);
+}
+.f-segmented button {
+  font: inherit;
+  color: var(--f-text-2);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  padding: 3px 12px 4px;
+  cursor: default;
+}
+.f-segmented button:hover { color: var(--f-text-1); background: var(--f-subtle-hover); }
+.f-segmented button[aria-pressed="true"] {
+  color: var(--f-text-1);
+  background: var(--f-control-focus);
+  border-color: var(--f-control-stroke);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .08);
+}
+
+/* ======================================================================== */
+/* InfoBar: <div class="f-infobar success|caution|critical|info">          */
+/* ======================================================================== */
+
+.f-infobar {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 13px 16px;
+  border: 1px solid var(--f-card-stroke);
+  border-radius: var(--f-radius-control);
+  background: var(--f-info-bg);
+}
+.f-infobar::before {
+  content: "";
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--f-info-fg);
+}
+.f-infobar.success { background: var(--f-success-bg); }
+.f-infobar.success::before { background: var(--f-success-fg); }
+.f-infobar.caution { background: var(--f-caution-bg); }
+.f-infobar.caution::before { background: var(--f-caution-fg); }
+.f-infobar.critical { background: var(--f-critical-bg); }
+.f-infobar.critical::before { background: var(--f-critical-fg); }
+.f-infobar-text { flex: 1; min-width: 0; }
+.f-infobar-text strong { font-weight: 600; margin-right: 12px; }
+
+/* Transient notification anchored to the bottom of the window. */
+.f-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  z-index: 50;
+  min-width: 280px;
+  max-width: calc(100vw - 48px);
+  transform: translate(-50%, 16px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .18s, transform .25s cubic-bezier(0, 0, 0, 1);
+  box-shadow: var(--f-shadow-flyout);
+  backdrop-filter: blur(30px) saturate(1.2);
+}
+.f-toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+/* Attention dot, e.g. on a nav item: <span class="f-badge-dot"></span> */
+.f-badge-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--f-accent);
+  margin-left: auto;
+  flex-shrink: 0;
+}
+@media (max-width: 760px) {
+  .f-nav-item .f-badge-dot { position: absolute; top: 8px; right: 10px; }
+}
+
+/* ======================================================================== */
+/* Progress                                                                 */
+/* ======================================================================== */
+
+.f-spinner {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  border-top-color: var(--f-accent);
+  border-right-color: var(--f-accent);
+  animation: f-spin .8s linear infinite;
+  flex-shrink: 0;
+}
+@keyframes f-spin { to { transform: rotate(360deg); } }
+
+/* ======================================================================== */
+/* Layout helpers                                                           */
+/* ======================================================================== */
+
+.f-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.f-row.end { justify-content: flex-end; }
+.f-grow { flex: 1; min-width: 0; }
+.f-divider { height: 1px; background: var(--f-divider); margin: 16px 0; border: 0; }
+.f-empty {
+  padding: 24px 16px;
+  text-align: center;
+  color: var(--f-text-2);
+}

@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Fluent Kit Gallery</title>
+  <link rel="stylesheet" href="fluent.css" />
+  <style>
+    .swatch-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+    .icon-cell { display: flex; flex-direction: column; align-items: center; gap: 6px; width: 84px; padding: 10px 4px; border-radius: 4px; }
+    .icon-cell:hover { background: var(--f-subtle-hover); }
+    .icon-cell .f-icon { width: 20px; height: 20px; }
+    code { font: 12px/16px ui-monospace, Consolas, monospace; color: var(--f-text-2); }
+  </style>
+</head>
+<body class="f-app">
+  <div class="f-shell">
+    <nav class="f-nav">
+      <div class="f-nav-header"><span class="f-nav-title f-body-strong">Fluent Kit</span></div>
+      <button class="f-nav-item" aria-current="page"><i data-icon="widget"></i><span class="f-nav-label">Components</span></button>
+      <button class="f-nav-item"><i data-icon="color"></i><span class="f-nav-label">Nav item</span></button>
+      <div class="f-nav-spacer"></div>
+      <button class="f-nav-item"><i data-icon="info"></i><span class="f-nav-label">Footer item</span></button>
+    </nav>
+    <main class="f-content">
+      <div class="f-page">
+        <header class="f-page-header">
+          <nav class="f-breadcrumb f-title"><a href="#">Gallery</a><i data-icon="chevronRight"></i><span>Components</span></nav>
+        </header>
+
+        <h2 class="f-section-title">Type ramp</h2>
+        <div class="f-card block">
+          <p class="f-title-large">Title large</p>
+          <p class="f-title">Title</p>
+          <p class="f-subtitle">Subtitle</p>
+          <p class="f-body-strong">Body strong</p>
+          <p>Body</p>
+          <p class="f-secondary">Body secondary</p>
+          <p class="f-caption f-tertiary">Caption tertiary</p>
+        </div>
+
+        <h2 class="f-section-title">Buttons</h2>
+        <div class="f-card block"><div class="f-row">
+          <button class="f-btn">Standard</button>
+          <button class="f-btn accent">Accent</button>
+          <button class="f-btn subtle">Subtle</button>
+          <button class="f-btn"><i data-icon="add"></i>With icon</button>
+          <button class="f-btn subtle icon" aria-label="Edit"><i data-icon="edit"></i></button>
+          <button class="f-btn danger">Danger</button>
+          <button class="f-btn" disabled>Disabled</button>
+          <button class="f-btn accent" disabled>Disabled</button>
+          <button class="f-link">Hyperlink</button>
+        </div></div>
+
+        <h2 class="f-section-title">Setting cards</h2>
+        <div class="f-stack">
+          <div class="f-card">
+            <i data-icon="power"></i>
+            <div class="f-card-text"><span class="f-card-title">Toggle setting</span><span class="f-card-desc">Description text goes here.</span></div>
+            <div class="f-card-control"><label class="f-toggle" data-on="On" data-off="Off"><input type="checkbox" checked /><i></i></label></div>
+          </div>
+          <div class="f-card">
+            <i data-icon="resize"></i>
+            <div class="f-card-text"><span class="f-card-title">Combo box</span></div>
+            <div class="f-card-control"><select class="f-select"><option>Option one</option><option>Option two</option></select></div>
+          </div>
+          <div class="f-card">
+            <i data-icon="opacity"></i>
+            <div class="f-card-text"><span class="f-card-title">Slider</span></div>
+            <div class="f-card-control"><input class="f-slider" type="range" min="0" max="100" value="60" /></div>
+          </div>
+          <div class="f-card">
+            <i data-icon="color"></i>
+            <div class="f-card-text"><span class="f-card-title">Colour</span></div>
+            <div class="f-card-control"><input class="f-color" type="color" value="#005fb8" /></div>
+          </div>
+          <div class="f-card">
+            <i data-icon="widget"></i>
+            <div class="f-card-text"><span class="f-card-title">Segmented</span></div>
+            <div class="f-card-control">
+              <div class="f-segmented"><button aria-pressed="false">Small</button><button aria-pressed="true">Medium</button><button aria-pressed="false">Large</button></div>
+            </div>
+          </div>
+          <div class="f-card clickable" tabindex="0">
+            <div class="f-thumb"></div>
+            <div class="f-card-text"><span class="f-card-title">Clickable card with thumbnail</span><span class="f-card-desc">Navigates somewhere</span></div>
+            <div class="f-card-control"><span class="f-card-chevron"><i data-icon="chevronRight"></i></span></div>
+          </div>
+        </div>
+
+        <h2 class="f-section-title">Inputs</h2>
+        <div class="f-card block">
+          <div class="f-row" style="align-items:flex-end; gap:12px">
+            <label class="f-field f-grow"><span>Text box</span><input class="f-input" placeholder="Placeholder" /></label>
+            <label class="f-field"><span>Date</span><input class="f-input" type="date" /></label>
+            <label class="f-field"><span>Disabled</span><input class="f-input" value="Can't touch this" disabled /></label>
+          </div>
+          <hr class="f-divider" />
+          <div class="f-row">
+            <label class="f-search"><i data-icon="search"></i><input class="f-input" type="search" placeholder="Search" /></label>
+            <label class="f-btn f-file"><input type="file" /><i data-icon="image"></i>Choose file</label>
+          </div>
+          <hr class="f-divider" />
+          <div class="f-row">
+            <label class="f-check"><input type="checkbox" checked />Checkbox</label>
+            <label class="f-check"><input type="checkbox" />Unchecked</label>
+            <label class="f-toggle" data-on="On" data-off="Off"><input type="checkbox" /><i></i></label>
+            <span class="f-spinner"></span>
+          </div>
+        </div>
+
+        <h2 class="f-section-title">InfoBars</h2>
+        <div class="f-stack">
+          <div class="f-infobar info"><div class="f-infobar-text"><strong>Info</strong>Something worth knowing.</div></div>
+          <div class="f-infobar success"><div class="f-infobar-text"><strong>Success</strong>It worked.</div></div>
+          <div class="f-infobar caution"><div class="f-infobar-text"><strong>Caution</strong>Heads up.</div></div>
+          <div class="f-infobar critical"><div class="f-infobar-text"><strong>Error</strong>Something went wrong.</div></div>
+        </div>
+
+        <h2 class="f-section-title">Icons</h2>
+        <div class="f-card block"><div class="swatch-grid" id="icons"></div></div>
+      </div>
+    </main>
+  </div>
+  <script src="icons.js"></script>
+  <script>
+    Fluent.applyBackdrop();
+    document.getElementById('icons').innerHTML = Object.keys(Fluent.icons)
+      .map((n) => `<div class="icon-cell">${Fluent.icon(n)}<code>${n}</code></div>`).join('');
+    Fluent.hydrate();
+    document.querySelectorAll('.f-slider').forEach(Fluent.bindSlider);
+    document.querySelectorAll('.f-segmented').forEach((seg) => seg.addEventListener('click', (e) => {
+      const b = e.target.closest('button');
+      if (!b) return;
+      seg.querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+    }));
+  </script>
+</body>
+</html>
