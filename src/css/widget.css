@@ -45,12 +45,18 @@ html, body {
 
 body { color: #fff; }
 
+/* Sized by its content, not the window: widget.js measures this and fits the
+   window to it, so no invisible margin blocks clicks on the desktop. The
+   padding leaves room for the shadows. */
 .widget {
+  position: absolute;
+  top: 0;
+  left: 0;
   display: flex;
   align-items: center;
   gap: 16px;
-  height: 100%;
-  padding: 0 24px 0 28px;
+  width: max-content;
+  padding: 14px 18px 18px 14px;
 }
 
 /* ---- art ---------------------------------------------------------------- */
@@ -72,6 +78,7 @@ body { color: #fff; }
 /* ---- text --------------------------------------------------------------- */
 .text {
   min-width: 0;
+  max-width: 340px;
   flex: 1;
   text-shadow: var(--shadow);
 }

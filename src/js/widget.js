@@ -73,6 +73,16 @@
     }
   }
 
+  // Keep the window exactly as big as the widget.
+  let fitted = '';
+  function fit() {
+    const r = widget.getBoundingClientRect();
+    const size = `${Math.ceil(r.width)}x${Math.ceil(r.height)}`;
+    if (size === fitted) return;
+    fitted = size;
+    invoke('fit_widget', { width: Math.ceil(r.width), height: Math.ceil(r.height) });
+  }
+
   function go(i) {
     if (!state.games.length) return;
     index = (i + state.games.length) % state.games.length;
@@ -108,6 +118,9 @@
   // -------------------------------------------------------------------------
 
   renderStatic();
+  await document.fonts.ready;
+  fit();
+  new ResizeObserver(fit).observe(widget);
 
   // Tick on the second boundary so the seconds don't drift visibly.
   (function loop() {
