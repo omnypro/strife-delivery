@@ -28,10 +28,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
+      - uses: oven-sh/setup-bun@v2
 
       - uses: dtolnay/rust-toolchain@stable
         with:
@@ -41,7 +38,7 @@ jobs:
         with:
           workspaces: src-tauri -> target
 
-      - run: npm ci
+      - run: bun install --frozen-lockfile
 
       # Signed update artifacts (+ latest.json) are only produced when the
       # signing key secret exists, so forks/PRs without it still build.
@@ -62,6 +59,7 @@ jobs:
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
         with:
+          tauriScript: bun run tauri
           args: ${{ matrix.args }} ${{ steps.updater.outputs.args }}
           includeUpdaterJson: true
           tagName: ${{ startsWith(github.ref, 'refs/tags/v') && github.ref_name || '' }}

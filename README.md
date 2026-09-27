@@ -9,14 +9,12 @@ that just *sits on the desktop* so she can't forget about it.
 - Drag it anywhere; it remembers where you put it (or lock it in place).
 - Add games by searching Steam (release date + art filled in automatically), or
   add anything manually (console exclusives, games not on Steam yet).
-- Art is picked automatically: Steam library art with the game's logo when
-  it exists (and it upgrades itself when Steam adds it near launch), falling
-  back to store art. Or pick from store art, backgrounds and screenshots, or
-  upload your own.
+- Art is picked automatically: Steam's library cover when it exists (and it
+  upgrades itself when Steam adds it near launch), falling back to store art.
+  Or pick from store art, backgrounds and screenshots, or upload your own.
 - Steam release dates are re-checked every few hours, so delays show up on
   their own.
 - Understands vague dates ("Q2 2027", "April 2027", "Coming soon").
-- Cycles between games, or shows just one.
 - Starts when you log in (on by default, toggle in the tray menu).
 
 ## Using it
@@ -24,7 +22,6 @@ that just *sits on the desktop* so she can't forget about it.
 | Do this | To |
 | --- | --- |
 | Drag the widget | Move it |
-| Hover the widget | Show ‹ › (switch game) and ⚙ (manage) |
 | Double-click the widget | Open **Manage games** |
 | Right-click the widget or tray icon | Menu: manage, next game, lock position, start at login, reset position, quit |
 | Left-click the tray icon | Open **Manage games** |
@@ -44,17 +41,20 @@ The app isn't code-signed, so SmartScreen will say it's unrecognised; click
 
 ## Developing
 
-Requirements: Node 22+, Rust (stable), and the
+Requirements: [Bun](https://bun.sh), Rust (stable), and the
 [Tauri prerequisites](https://tauri.app/start/prerequisites/) for your OS.
 
 ```sh
-npm install
-npm run dev      # run the app
-npm run build    # build installers for the current OS
-npm run icons    # regenerate icons from assets/icon.svg
+bun install
+bun run dev      # run the app
+bun run build    # build installers for the current OS
+bun run icons    # regenerate icons from assets/icon.svg
 ```
 
-The frontend is plain HTML/CSS/JS in `src/` (no bundler). The Manage window
+The frontend is plain HTML/CSS/JS in `src/` (no bundler). The countdown is set
+in [Sometype Mono](https://github.com/googlefonts/sometype-mono) and the text in
+[Optician Sans](https://github.com/anewtypeofinterference/Optician-Sans), both
+bundled under the SIL Open Font License. The Manage window
 is built on [`src/fluent/`](src/fluent/README.md), a small reusable
 Windows 11-style component kit (open `src/fluent/gallery.html` to browse it). The Rust side in
 `src-tauri/` handles the tray, menus, Steam requests (to avoid CORS), start at
