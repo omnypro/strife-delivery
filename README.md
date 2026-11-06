@@ -6,6 +6,8 @@ that just *sits on the desktop* so she can't forget about it.
 
 - Lives on the desktop like a macOS widget: transparent, frameless, sits
   *behind* your windows, no taskbar button.
+- Every game in the list gets its own countdown, stacked in one widget in the
+  order of the Manage games list.
 - Drag it anywhere; it remembers where you put it (or lock it in place).
 - Add games by searching Steam (release date + art filled in automatically), or
   add anything manually (console exclusives, games not on Steam yet).
@@ -23,7 +25,7 @@ that just *sits on the desktop* so she can't forget about it.
 | --- | --- |
 | Drag the widget | Move it |
 | Double-click the widget | Open **Manage games** |
-| Right-click the widget or tray icon | Menu: manage, next game, lock position, start at login, reset position, quit |
+| Right-click the widget or tray icon | Menu: manage, show widget, reset position, lock position, start at login, updates, quit |
 | Left-click the tray icon | Open **Manage games** |
 
 If the widget ever goes missing (e.g. after unplugging a monitor), use

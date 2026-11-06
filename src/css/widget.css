@@ -52,11 +52,20 @@ body { color: #fff; }
   position: absolute;
   top: 0;
   left: 0;
+  width: max-content;
+  padding: 14px 18px 18px 14px;
+}
+
+/* One card per game. A grid column is as wide as its widest card, so every
+   card gets the same width. */
+.stack {
+  display: grid;
+  gap: 16px;
+}
+.game {
   display: flex;
   align-items: center;
   gap: 16px;
-  width: max-content;
-  padding: 14px 18px 18px 14px;
 }
 
 /* ---- art ---------------------------------------------------------------- */

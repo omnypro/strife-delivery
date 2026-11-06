@@ -13,7 +13,6 @@
     return {
       version: 1,
       games: [],
-      activeId: null,
       lockPosition: false,
       lastSteamRefresh: null,
     };
@@ -27,9 +26,6 @@
     for (const g of out.games) {
       if (!g.artChoice) g.artChoice = g.customArt ? 'custom' : 'auto';
       delete g.customArt;
-    }
-    if (out.games.length && !out.games.some((g) => g.id === out.activeId)) {
-      out.activeId = out.games[0].id;
     }
     return out;
   }

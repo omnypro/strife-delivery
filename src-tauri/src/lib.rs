@@ -320,7 +320,6 @@ fn toggle_lock(app: &AppHandle) {
 
 fn build_menu(app: &AppHandle) -> tauri::Result<AppMenu> {
     let manage = MenuItem::with_id(app, "manage", "Manage games…", true, None::<&str>)?;
-    let next = MenuItem::with_id(app, "next", "Next game", true, None::<&str>)?;
     let show = MenuItem::with_id(app, "show", "Show widget", true, None::<&str>)?;
     let reset = MenuItem::with_id(app, "reset", "Reset widget position", true, None::<&str>)?;
     let locked = read_state(app)
@@ -342,7 +341,6 @@ fn build_menu(app: &AppHandle) -> tauri::Result<AppMenu> {
         app,
         &[
             &manage,
-            &next,
             &PredefinedMenuItem::separator(app)?,
             &show,
             &reset,
@@ -364,9 +362,6 @@ fn build_menu(app: &AppHandle) -> tauri::Result<AppMenu> {
 fn handle_menu(app: &AppHandle, id: &str) {
     match id {
         "manage" => show_settings(app),
-        "next" => {
-            let _ = app.emit_to(WIDGET, "next-game", ());
-        }
         "show" => show_widget(app.clone()),
         "reset" => reset_widget_position(app),
         "lock" => toggle_lock(app),

@@ -94,16 +94,14 @@
     $('games-empty').hidden = state.games.length > 0;
     list.innerHTML = state.games
       .map((g, i) => {
-        const active = g.id === state.activeId;
         return `
           <div class="f-card clickable game" data-id="${g.id}" tabindex="0" role="button" aria-label="Edit ${escapeHtml(g.name)}">
             <div class="f-thumb" ${g.art ? `style="background-image:url('${escapeHtml(g.art).replace(/'/g, '%27')}')"` : ''}></div>
             <div class="f-card-text">
-              <span class="f-card-title">${escapeHtml(g.name)}${active ? '<span class="tag on">On widget</span>' : ''}</span>
+              <span class="f-card-title">${escapeHtml(g.name)}</span>
               <span class="f-card-desc">${escapeHtml(describeDate(g))}<span class="sep">·</span>${escapeHtml(status(g))}${g.dateSource === 'steam' ? '<span class="sep">·</span>Steam' : ''}</span>
             </div>
             <div class="f-card-control">
-              ${active ? '' : `<button class="f-btn subtle icon" data-act="show" title="Show on widget" aria-label="Show on widget">${icon('eye')}</button>`}
               <button class="f-btn subtle icon" data-act="up" title="Move up" aria-label="Move up" ${i === 0 ? 'disabled' : ''}>${icon('arrowUp')}</button>
               <span class="f-card-chevron">${icon('chevronRight')}</span>
             </div>
@@ -118,7 +116,6 @@
     const id = card.dataset.id;
     const act = e.target.closest('button[data-act]');
     if (!act) return go('edit', id);
-    if (act.dataset.act === 'show') commit((s) => { s.activeId = id; });
     if (act.dataset.act === 'up') {
       commit((s) => {
         const i = s.games.findIndex((g) => g.id === id);
@@ -197,7 +194,6 @@
       };
       await commit((s) => {
         s.games.push(game);
-        s.activeId = game.id;
       });
       $('results').innerHTML = '';
       $('search').value = '';
@@ -255,7 +251,6 @@
     };
     await commit((s) => {
       s.games.push(game);
-      s.activeId = game.id;
     });
     e.target.reset();
     $('m-art-clear').click();
@@ -289,8 +284,6 @@
     if (document.activeElement !== $('e-time')) $('e-time').value = time;
 
     renderArtPicker(g);
-    $('e-show').disabled = g.id === state.activeId;
-    $('e-show').textContent = g.id === state.activeId ? 'Showing' : 'Show';
     const del = $('e-delete');
     if (!del.dataset.armed) del.textContent = 'Remove';
   }
@@ -458,8 +451,6 @@
     }
   });
 
-  $('e-show').addEventListener('click', () => commit((s) => { s.activeId = editingId; }));
-
   $('e-delete').addEventListener('click', async () => {
     const del = $('e-delete');
     const g = editing();
@@ -474,7 +465,6 @@
     const id = g.id;
     await commit((s) => {
       s.games = s.games.filter((x) => x.id !== id);
-      if (s.activeId === id) s.activeId = s.games[0]?.id ?? null;
     });
     go('games');
     toast(`Removed ${g.name}`);

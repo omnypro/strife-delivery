@@ -3,29 +3,52 @@
 
   const $ = (id) => document.getElementById(id);
   const widget = $('widget');
-  const art = $('art');
+  const stack = $('stack');
 
   const STEAM_REFRESH_MS = 6 * 60 * 60 * 1000;
 
   let state = await window.SD.loadState();
-  let index = Math.max(0, state.games.findIndex((g) => g.id === state.activeId));
-  let currentArt;
   let shown = false;
 
-  const currentGame = () => state.games[index] || null;
+  // Game id -> its card. The empty-list card lives under EMPTY.
+  const EMPTY = '';
+  const cards = new Map();
+
   const pad = (n) => String(n).padStart(2, '0');
 
   // -------------------------------------------------------------------------
   // Rendering
   // -------------------------------------------------------------------------
 
-  function setArt(game) {
-    const url = game && game.art;
-    if (url === currentArt) return;
-    currentArt = url;
+  function createCard() {
+    const el = document.createElement('section');
+    el.className = 'game';
+    el.innerHTML = `
+      <div class="art"></div>
+      <div class="text">
+        <div class="count">—</div>
+        <h2 class="title"></h2>
+        <div class="date"></div>
+      </div>`;
+    return {
+      el,
+      art: el.querySelector('.art'),
+      count: el.querySelector('.count'),
+      title: el.querySelector('.title'),
+      date: el.querySelector('.date'),
+      game: null,
+      currentArt: undefined,
+    };
+  }
+
+  function setArt(card, url) {
+    url = url || null;
+    const { art } = card;
+    if (url === card.currentArt) return;
+    card.currentArt = url;
     art.classList.add('fade');
     const apply = () => {
-      if (currentArt !== url) return;
+      if (card.currentArt !== url) return;
       art.classList.toggle('placeholder', !url);
       art.style.backgroundImage = url ? `url("${url.replace(/"/g, '%22')}")` : '';
       art.classList.remove('fade');
@@ -34,7 +57,7 @@
     const img = new Image();
     img.onload = () => setTimeout(apply, 150);
     img.onerror = () => {
-      if (currentArt === url) {
+      if (card.currentArt === url) {
         art.classList.add('placeholder');
         art.style.backgroundImage = '';
         art.classList.remove('fade');
@@ -43,33 +66,56 @@
     img.src = url;
   }
 
+  // Cards are reused between renders so a state change doesn't re-fade art
+  // that hasn't changed.
   function renderStatic() {
-    const game = currentGame();
-    if (!game) {
-      setArt(null);
-      $('count').textContent = '000:00:00:00';
-      $('title').textContent = 'No games yet';
-      $('date').textContent = 'Double-click to add one';
-      return;
+    const wanted = state.games.length ? state.games.map((g) => g.id) : [EMPTY];
+
+    for (const [id, card] of cards) {
+      if (wanted.includes(id)) continue;
+      card.el.remove();
+      cards.delete(id);
     }
-    $('title').textContent = game.name;
-    $('date').textContent = describeDate(game);
-    setArt(game);
+
+    wanted.forEach((id, i) => {
+      let card = cards.get(id);
+      if (!card) {
+        card = createCard();
+        cards.set(id, card);
+      }
+      if (stack.children[i] !== card.el) stack.insertBefore(card.el, stack.children[i] || null);
+
+      if (id === EMPTY) {
+        card.game = null;
+        setArt(card, null);
+        card.count.textContent = '000:00:00:00';
+        card.title.textContent = 'No games yet';
+        card.date.textContent = 'Double-click to add one';
+        return;
+      }
+      const game = state.games[i];
+      card.game = game;
+      card.title.textContent = game.name;
+      card.date.textContent = describeDate(game);
+      setArt(card, game.art);
+    });
+
     tick();
   }
 
   // DDD:HH:MM:SS, or a word when there's nothing to count.
   function tick() {
-    const game = currentGame();
-    if (!game) return;
-    const c = countdown(game);
-    if (!c) {
-      $('count').textContent = 'TBA';
-    } else if (c.released) {
-      $('count').textContent = 'OUT NOW';
-    } else {
-      $('count').textContent =
-        `${c.approximate ? '~' : ''}${c.days}:${pad(c.hours)}:${pad(c.minutes)}:${pad(c.seconds)}`;
+    for (const card of cards.values()) {
+      if (!card.game) continue;
+      const c = countdown(card.game);
+      if (!c) {
+        card.count.textContent = 'TBA';
+      } else if (c.released) {
+        card.count.textContent = 'OUT NOW';
+      } else {
+        card.count.textContent =
+          `${c.approximate ? '~' : ''}${c.days}:${pad(c.hours)}:${pad(c.minutes)}:${pad(c.seconds)}`;
+      }
     }
   }
 
@@ -81,14 +127,6 @@
     if (size === fitted) return;
     fitted = size;
     invoke('fit_widget', { width: Math.ceil(r.width), height: Math.ceil(r.height) });
-  }
-
-  function go(i) {
-    if (!state.games.length) return;
-    index = (i + state.games.length) % state.games.length;
-    renderStatic();
-    state.activeId = state.games[index].id;
-    window.SD.saveState(state);
   }
 
   // -------------------------------------------------------------------------
@@ -104,12 +142,8 @@
     invoke('show_context_menu');
   });
 
-  listen('next-game', () => go(index + 1));
   listen('state-changed', (next) => {
     state = window.SD.normalizeState(next);
-    const active = state.games.findIndex((g) => g.id === state.activeId);
-    if (active >= 0) index = active;
-    else index = Math.min(index, Math.max(0, state.games.length - 1));
     renderStatic();
   });
 
